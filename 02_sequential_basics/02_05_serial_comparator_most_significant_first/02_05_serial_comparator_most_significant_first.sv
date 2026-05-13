@@ -58,40 +58,22 @@ module serial_comparator_most_significant_first
   //
   // See the testbench for the output format ($display task).
 logic is_equal;
-logic a_l_b;
+logic prev_a_less_b;
 
   always_ff @ (posedge clk)
-    if (rst)
-    begin
-      is_equal <= '1;
-      a_l_b <= '0;
+    if (rst) begin
+    	is_equal <= '1;
+		prev_a_less_b <= '0;
     end
-    else
-    begin
-      if (is_equal)
-	  begin
-		if (a < b)
-		begin
+    else begin
+		if (is_equal & a != b) begin
 			is_equal <= '0;
-			a_l_b <= '1;
+			prev_a_less_b <= a < b;
 		end
-		else
-		begin
-			if (a > b)
-			begin
-				is_equal <= '0;
-				a_l_b <= '0;
-			end
-		end
-	  end
-	  else
-	  begin
+	end
 
-	  end
-    end
-
-assign a_less_b = a_l_b;
-assign a_greater_b = ~(a_l_b | is_equal) & ~rst;
-assign a_eq_b = is_equal | (a != b);
+assign a_eq_b = is_equal & (a == b);
+assign a_less_b = ~rst & (a < b || (~is_equal & prev_a_less_b));
+assign a_greater_b = ~rst & (a > b || (~is_equal & ~prev_a_less_b));
 
 endmodule
