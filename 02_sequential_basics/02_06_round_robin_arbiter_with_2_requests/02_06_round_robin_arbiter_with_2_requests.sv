@@ -22,6 +22,16 @@ module round_robin_arbiter_with_2_requests
     // Example:
     // requests -> 01 00 10 11 11 00 11 00 11 11
     // grants   -> 01 00 10 01 10 00 01 00 10 01
-
+logic [1:0]prev_grants;
+wire[1:0] g;
+assign g = {(requests[1] & (prev_grants[0] || (~requests[0]))),(requests[0] & (prev_grants[1] || (~requests[1]) || (prev_grants == '0)))};
+assign grants = clk ? g : prev_grants;
+always @(clk) begin
+	if (rst) begin
+		prev_grants <= '0;
+	end else begin
+		prev_grants <= g;
+	end
+end
 
 endmodule

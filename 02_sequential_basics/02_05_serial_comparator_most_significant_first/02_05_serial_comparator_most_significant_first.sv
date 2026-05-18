@@ -73,7 +73,7 @@ logic prev_a_less_b;
 	end
 
 assign a_eq_b = is_equal & (a == b);
-assign a_less_b = ~rst & (a < b || (~is_equal & prev_a_less_b));
-assign a_greater_b = ~rst & (a > b || (~is_equal & ~prev_a_less_b));
+assign a_less_b = ~rst & ((is_equal & a < b) || (~is_equal & prev_a_less_b));
+assign a_greater_b = ~rst & ((is_equal & a > b) || (~is_equal & ~prev_a_less_b));
 
 endmodule

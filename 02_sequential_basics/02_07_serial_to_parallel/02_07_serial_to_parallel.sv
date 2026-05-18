@@ -13,7 +13,7 @@ module serial_to_parallel
     input                      serial_valid,
     input                      serial_data,
 
-    output logic               parallel_valid,
+    output                parallel_valid,
     output logic [width - 1:0] parallel_data
 );
     // Task:
@@ -27,5 +27,32 @@ module serial_to_parallel
     // Note:
     // Check the waveform diagram in the README for better understanding.
 
+logic [$clog2(width):0] count;
+wire [$clog2(width):0] current_count;
+assign current_count = count + '1;
+assign parallel_valid = clk ? current_count == width : count == width - 1;
+always @(posedge clk) begin
+	if (rst) begin
+		count <= '0;
+	end else begin
+		if (serial_valid) begin
+			if (count == width - 1) begin
+				count <= '0;
+			end else begin
+				count <= count + '1;
+			end
+		end
+	end
+end
+
+always @(posedge clk) begin
+	if (rst) begin
+		parallel_data <= '0;
+	end else begin
+		if (serial_valid) begin
+			parallel_data[count] <= serial_data;
+		end
+	end
+end
 
 endmodule
