@@ -29,17 +29,18 @@ module serial_to_parallel
 
 logic [$clog2(width):0] count;
 wire [$clog2(width):0] current_count;
-assign current_count = count + '1;
+wire [$clog2(width):0] pre_count;
+assign current_count = count + 1;
 assign parallel_valid = clk ? current_count == width : count == width - 1;
 always @(posedge clk) begin
 	if (rst) begin
-		count <= '0;
+		count <= 0;
 	end else begin
 		if (serial_valid) begin
 			if (count == width - 1) begin
-				count <= '0;
+				count <= 0;
 			end else begin
-				count <= count + '1;
+				count <= count + 1;
 			end
 		end
 	end
@@ -47,10 +48,10 @@ end
 
 always @(posedge clk) begin
 	if (rst) begin
-		parallel_data <= '0;
+		parallel_data <= 0;
 	end else begin
 		if (serial_valid) begin
-			parallel_data[count] <= serial_data;
+			parallel_data[width - count - 1] <= serial_data;
 		end
 	end
 end

@@ -21,7 +21,7 @@ module serial_adder
 
   always_ff @ (posedge clk)
     if (rst)
-      carry <= '0;
+      carry <= 0;
     else
       carry <= carry_d;
 
@@ -57,7 +57,7 @@ module serial_adder_using_logic_operations_only
 
   always_ff @ (posedge clk)
     if (rst)
-      carry <= '0;
+      carry <= 0;
     else
       carry <= carry_d;
 
