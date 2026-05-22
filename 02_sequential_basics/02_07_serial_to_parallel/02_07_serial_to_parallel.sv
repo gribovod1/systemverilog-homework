@@ -51,7 +51,16 @@ always @(posedge clk) begin
 		parallel_data <= 0;
 	end else begin
 		if (serial_valid) begin
-			parallel_data[width - count - 1] <= serial_data;
+/*			parallel_data[width - 1] <= serial_data;
+			for(int i = 0; i < width - 1; i++) begin
+				parallel_data[i] <= parallel_data[i + 1];
+			end*/
+			parallel_data[count] <= serial_data;
+			if (count == width - 1) begin
+				count <= 0;
+			end else begin
+				count <= count + 1;
+			end
 		end
 	end
 end
